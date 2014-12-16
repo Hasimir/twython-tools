@@ -36,48 +36,32 @@ from config import *
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
+l = len(sys.argv)
+
 parser = argparse.ArgumentParser(
-    prog="twyt.py",
+    prog="foad.py",
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description=__title__, epilog=textwrap.dedent("""\
         You MUST place any parameter of more than one word in
         quotation marks.
 
-        https://github.com/adversary-org/
+        Can only be used with the old calling method with the
+        equivalent of -f and -n.  If additional parameters are used
+        (e.g. --extra or --sender), then the current method MUST be
+        used.
+
+        For more help run:  pydoc3 foad
+
+        https://github.com/adversary-org/foad
 
         Bitcoin:  {0}
 
     {1}
     {2}
-    """.format(__bitcoin__, __version__, __copyright__)))
-parser.add_argument("-t", "--tweet", help="The tweet to post.", action="store", required=False)
-parser.add_argument("-d", "--direct", help="The direct message to send.", action="store", required=False)
-parser.add_argument("-n", "--name", help="Name of target, more than one word must be in quotation marks. May or may not include the at symbol.", action="store", required=False)
-parser.add_argument("-r", "--reply", help="The status ID of the tweet being replied to.", action="store", required=False)
-parser.add_argument("-b", "--block", help="The user to block.  May or may not match --name.", action="store", required=False)
-parser.add_argument("-m", "--mute", help="The user to mute.  May or may not match --name.", action="store", required=False)
-parser.add_argument("-s", "--spamblock", help="The user to block and report as a spammer.  May or may not match --name.", action="store", required=False)
+    """.format(__bitcoin__, version, __copyright__)))
+parser.add_argument("-t", "--type", help="One word, indicates type of action to take (e.g. tweet, retweetreply, dm, etc).", action="store", required=False)
+parser.add_argument("-n", "--name", help="Name of target, more than one word must be in quotation marks. May or may not include @symbol.", action="store", required=False)
+parser.add_argument("-s", "--screenname", help="Name of target, more than one word must be in quotation marks. If the @ symbol is not included then it will be added.", action="store", required=False)
+parser.add_argument("-S", "--status", help="Status ID of the tweet to reply to or retweet. If a URL is included this will be fixed in the code.", action="store", required=False)
+parser.add_argument("-O", "--options", help="Lists the explicit variations (the same as: -f list_options), will accept any argument to activate.", action="store", required=False)
 parser.add_argument("-V", "--version", help="Print the version number.", action="store", required=False)
-
-args = parser.parse_args()
-    
-if args.tweet is None:
-    tweet = ""
-else:
-    tweet = args.tweet
-
-if args.direct is None:
-    direct = ""
-else:
-    direct = args.direct
-
-if args.name is None:
-    name = ""
-else:
-    name = args.name
-
-
-try:
-    twitter.update_status(status=tweet)
-except TwythonError as e:
-    print(e)
